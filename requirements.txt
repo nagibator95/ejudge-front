@@ -1,0 +1,5 @@
+flask
+flask_sqlalchemy
+pymongo
+Flask-PyMongo
+flask_redis
