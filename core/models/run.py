@@ -1,3 +1,4 @@
+import datetime
 import hashlib
 from typing import Optional
 
@@ -19,6 +20,8 @@ class Run(db.Model):
 
     problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'))
     problem = db.Column(db.relationship('Problem', backref=db.backref('runs')))
+
+    create_time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     # Поля скопированные из ejudge.runs
     ejudge_run_id = db.Column('ej_run_id', db.Integer)
