@@ -1,25 +1,13 @@
-from flask import jsonify as flask_jsonify, Flask, current_app
-from werkzeug.exceptions import HTTPException
+from core.utils import jsonify
+from flask import current_app, Flask
+from werkzeug.exceptions import \
+    HTTPException
 
 
 DEFAULT_MESSAGE = (
     'Oops! An error happened. We are already '
     'trying to resolve the problem!'
 )
-
-
-def jsonify(data, status_code=200):
-    response = {
-        'status_code': status_code,
-    }
-    if status_code in (200, 201):
-        response['data'] = data
-        response['status'] = 'success'
-    else:
-        response['error'] = data
-        response['status'] = 'error'
-
-    return flask_jsonify(response), status_code
 
 
 def jsonify_http_exception(exception: HTTPException):

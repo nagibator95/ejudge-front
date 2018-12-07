@@ -4,7 +4,8 @@ from flask import Flask
 
 from core.models.base import db
 from core.plugins import mongo, redis
-from core.utils import register_error_handlers
+from core.utils.exceptions import register_error_handlers
+from core.utils.auth import get_api_key_checker
 
 
 def create_app():
@@ -36,5 +37,8 @@ def create_app():
 
     register_error_handlers(app)
 
-    return app
+    if not app.config.get('DEBUG'):
+        secret_key = app.config['SECRET_KEY']
+        app.before_request(get_api_key_checker(secret_key))
 
+    return app
