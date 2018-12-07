@@ -7,7 +7,7 @@ from webargs.flaskparser import parser
 from werkzeug.exceptions import BadRequest, NotFound
 
 from core.controllers.serializers.run import RunSchema
-from core.ejudge.submit_queue import queue_submit, get_last_get_id
+from core.ejudge.submit_queue import queue_submit
 from core.models import db, Run, Problem
 from core.utils import jsonify
 
@@ -21,26 +21,31 @@ get_args = {
     'to_timestamp': fields.Integer(),  # Может быть -1, тогда не фильтруем
 }
 
+post_args = {
+    'lang_id': fields.Integer(required=True),
+    'uid': fields.String(required=True),
+}
+
 
 class ProblemRuns(MethodView):
-    """ View for getting problem submissions
-
-        Possible filters
-        ----------------
-        from_timestamp: timestamp
-        to_timestamp: timestamp
-        uid: [str]
-        lang_id: int
-        status_id: int
-        context_identity: str | None
-
-        Returns
-        --------
-        'result': success | error
-        'data': [Run]
-        'metadata': {count: int, page_count: int}
-    """
     def get(self, problem_identity: str, context_identity=None):
+        """ View for getting problem submissions
+
+            Possible filters
+            ----------------
+            from_timestamp: timestamp
+            to_timestamp: timestamp
+            uid: [str]
+            lang_id: int
+            status_id: int
+            context_identity: str | None
+
+            Returns
+            --------
+            'result': success | error
+            'data': [Run]
+            'metadata': {count: int, page_count: int}
+        """
         args = parser.parse(get_args, request)
         uids = args.get('uid')
         lang_id = args.get('lang_id')
@@ -94,32 +99,6 @@ class ProblemRuns(MethodView):
 
         return jsonify({'result': 'success', 'data': data.data, 'metadata': metadata})
 
-
-class SubmitApi(MethodView):
-    post_args = {
-        'lang_id': fields.Integer(required=True),
-        'uid': fields.String(required=True),
-    }
-
-    @staticmethod
-    def check_file_restriction(file, max_size_kb: int = 64) -> bytes:
-        """ Function for checking submission restricts
-            Checks only size (KB less then max_size_kb)
-                and that is is not empty (len > 2)
-            Raises
-            --------
-            ValueError if restriction is failed
-        """
-        max_size = max_size_kb * 1024
-        file_bytes: bytes = file.read(max_size)
-        if len(file_bytes) == max_size:
-            raise ValueError('Submission should be less than 64Kb')
-        # TODO: 4 это прото так, что такое путой файл для ejudge?
-        if len(file_bytes) < 4:
-            raise ValueError('Submission shouldn\'t be empty')
-
-        return file_bytes
-
     def post(self, problem_identity: str, context_identity: str = None):
         args = parser.parse(self.post_args)
 
@@ -133,7 +112,7 @@ class SubmitApi(MethodView):
             raise NotFound('Problem with this uid is not found')
 
         try:
-            text = self.check_file_restriction(file)
+            text = self._check_file_restriction(file)
         except ValueError as e:
             raise BadRequest(e.args[0])
         source_hash = Run.generate_source_hash(text)
@@ -173,3 +152,22 @@ class SubmitApi(MethodView):
         data = schema.dump(run)
 
         return jsonify(data.data, 201)
+
+    @staticmethod
+    def _check_file_restriction(file, max_size_kb: int = 64) -> bytes:
+        """ Function for checking submission restricts
+            Checks only size (KB less then max_size_kb)
+                and that is is not empty (len > 2)
+            Raises
+            --------
+            ValueError if restriction is failed
+        """
+        max_size = max_size_kb * 1024
+        file_bytes: bytes = file.read(max_size)
+        if len(file_bytes) == max_size:
+            raise ValueError('Submission should be less than 64Kb')
+        # TODO: 4 это прото так, что такое путой файл для ejudge?
+        if len(file_bytes) < 4:
+            raise ValueError('Submission shouldn\'t be empty')
+
+        return file_bytes
