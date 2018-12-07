@@ -3,9 +3,7 @@ import hashlib
 from typing import Optional
 
 from core import mongo
-from core.models.base import db
-
-UNIQUE_IDENTITY_SIZE = 32
+from core.models.base import db, UNIQUE_IDENTITY_SIZE
 
 
 class Run(db.Model):

@@ -3,14 +3,14 @@ import os
 from zipfile import ZipFile
 
 from core.ejudge.serve_internal import EjudgeContestCfg
-from core.models.base import db
+from core.models.base import db, UNIQUE_IDENTITY_SIZE
 from core.utils.run import read_file_unknown_encoding
 
 
 class Problem(db.Model):
     __tablename__ = 'problem'
     id = db.Column(db.Integer, primary_key=True)
-    problem_identity = db.Column(db.String(20), nullable=False)
+    problem_identity = db.Column(db.String(UNIQUE_IDENTITY_SIZE), nullable=False)
 
     ejudge_contest_id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=False)
     ejudge_problem_id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=False)  # id in contest
