@@ -7,3 +7,5 @@ requests
 pyhamcrest
 mock
 gevent
+marshmallow
+webargs
