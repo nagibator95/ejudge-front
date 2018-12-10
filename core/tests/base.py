@@ -3,7 +3,7 @@ import unittest
 import sys
 
 from core import create_app
-from core.models import db
+from core.models import db, Problem
 from core.plugins import mongo, redis
 
 
@@ -29,6 +29,18 @@ class TestCase(flask_testing.TestCase):
         mongo.db.client.drop_database(mongo.db)
 
         redis.flushdb()
+
+    def create_problems(self, problem_identities: list):
+        self.problems = []
+        for uuid in problem_identities:
+            p = Problem(problem_identity=uuid,
+                        ejudge_contest_id=1,
+                        ejudge_problem_id=1)
+            self.problems.append(p)
+        db.session.add_all(self.problems)
+        db.session.commit()
+        for p in self.problems:
+            db.session.refresh(p)
 
 
 if __name__ == '__main__':
