@@ -77,7 +77,6 @@ class SubmitQueue(RedisQueue):
         )
 
         redis.hdel(user_submits_key(self.key, submit.user_id), submit.id)
-        self.notify_queue_status()
         return submit
 
     def peek_all_submits(self):

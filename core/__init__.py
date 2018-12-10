@@ -2,6 +2,7 @@ from logging.config import dictConfig
 
 from flask import Flask
 
+from core.controllers.route import problem_blueprint
 from core.models.base import db
 from core.plugins import mongo, redis
 from core.utils.exceptions import register_error_handlers
@@ -34,6 +35,8 @@ def create_app():
     db.init_app(app)
     mongo.init_app(app)
     redis.init_app(app)
+
+    app.register_blueprint(problem_blueprint)
 
     register_error_handlers(app)
 

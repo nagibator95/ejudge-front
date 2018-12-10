@@ -2,7 +2,7 @@ import datetime
 import hashlib
 from typing import Optional
 
-from core import mongo
+from core.plugins import mongo
 from core.models.base import db, UNIQUE_IDENTITY_SIZE
 
 
@@ -17,7 +17,7 @@ class Run(db.Model):
     ejudge_identity = db.Column(db.String(UNIQUE_IDENTITY_SIZE))
 
     problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'))
-    problem = db.Column(db.relationship('Problem', backref=db.backref('runs')))
+    problem = db.relationship('Problem', backref=db.backref('runs'))
 
     create_time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 

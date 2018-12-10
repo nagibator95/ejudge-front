@@ -9,3 +9,4 @@ mock
 gevent
 marshmallow
 webargs
+pymysql

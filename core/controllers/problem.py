@@ -67,7 +67,8 @@ class ProblemRuns(MethodView):
 
         query = db.session.query(Run) \
             .join(Problem) \
-            .filter(Problem.problem_identity == problem_identity)
+            .filter(Problem.problem_identity == problem_identity) \
+            .filter(Run.context_identity == context_identity)
 
         if uids:
             query = query.filter(Run.user_identity.in_(uids))
@@ -75,8 +76,6 @@ class ProblemRuns(MethodView):
             query = query.filter(Run.ejudge_language_id == lang_id)
         if status_id:
             query = query.filter(Run.ejudge_status == status_id)
-        if context_identity:
-            query = query.filter(Run.context_identity == context_identity)
         if from_timestamp:
             query = query.filter(Run.create_time > from_timestamp)
         if to_timestamp:
@@ -87,7 +86,8 @@ class ProblemRuns(MethodView):
         runs = []
         for run in result.items:
             # Это для сериалайзера
-            run.problem = problem_identity
+            run.problem_identity = problem_identity
+            runs.append(run)
 
         metadata = {
             'count': result.total,
@@ -97,17 +97,17 @@ class ProblemRuns(MethodView):
         schema = RunSchema(many=True)
         data = schema.dump(runs)
 
-        return jsonify({'result': 'success', 'data': data.data, 'metadata': metadata})
+        return jsonify({'runs': data.data, 'metadata': metadata})
 
     def post(self, problem_identity: str, context_identity: str = None):
-        args = parser.parse(self.post_args)
+        args = parser.parse(post_args)
 
         language_id = args['lang_id']
         uid = args.get('uid')
         file = parser.parse_files(request, 'file', 'file')
 
         problem = db.session.query(Problem)\
-            .filter(Problem.problem_identity == problem_identity)
+            .filter(Problem.problem_identity == problem_identity).one_or_none()
         if not problem:
             raise NotFound('Problem with this uid is not found')
 
@@ -147,7 +147,7 @@ class ProblemRuns(MethodView):
         ejudge_url = current_app.config['EJUDGE_NEW_CLIENT_URL']
         _ = queue_submit(run.id, uid, ejudge_url)
 
-        run.problem = problem_identity
+        run.problem_identity = problem_identity
         schema = RunSchema()
         data = schema.dump(run)
 

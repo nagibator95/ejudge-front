@@ -3,7 +3,7 @@ from flask import current_app
 
 from core.ejudge.ejudge_proxy import submit
 from core.models import db
-from core.model.run import Run
+from core.models.run import Run
 from core.utils.helpers import attrs_to_dict
 
 

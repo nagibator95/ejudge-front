@@ -6,5 +6,8 @@ class RunSchema(Schema):
     user_identity = fields.String()
     context_identity = fields.String()
     ejudge_identity = fields.String()
+    ejudge_status = fields.String()
 
-    problem = fields.String(dump_only=True)
+    problem_identity = fields.String(dump_only=True)
+
+    create_time = fields.DateTime(dump_only=True)

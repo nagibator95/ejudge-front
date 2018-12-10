@@ -12,8 +12,8 @@ class Problem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     problem_identity = db.Column(db.String(UNIQUE_IDENTITY_SIZE), nullable=False)
 
-    ejudge_contest_id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=False)
-    ejudge_problem_id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=False)  # id in contest
+    ejudge_contest_id = db.Column(db.Integer, nullable=False, autoincrement=False)
+    ejudge_problem_id = db.Column(db.Integer, nullable=False, autoincrement=False)  # id in contest
 
     def get_test(self, test_num, size=255):
         conf = EjudgeContestCfg(number=self.ejudge_contest_id)
