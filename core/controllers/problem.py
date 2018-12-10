@@ -153,6 +153,28 @@ class ProblemRuns(MethodView):
 
         return jsonify(data.data, 201)
 
+    def put(self, run_id, **___):
+        args = request.get_json(force=True)
+        args = args.get('run')
+        if args is None:
+            raise BadRequest('Expected run object')
+        run = db.session.query(Run).get(run_id)
+        if not run:
+            raise NotFound('Run with current id not found')
+
+        schema = RunSchema(partial=True, context={'instance': run})
+        schema.load(args)
+
+        db.session.add(run)
+        db.session.commit()
+
+        schema = RunSchema()
+
+        data = schema.dump(run)
+
+        return jsonify(data.data)
+
+
     @staticmethod
     def _check_file_restriction(file, max_size_kb: int = 64) -> bytes:
         """ Function for checking submission restricts

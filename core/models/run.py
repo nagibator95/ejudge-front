@@ -35,6 +35,8 @@ class Run(db.Model):
     ejudge_last_change_time = db.Column('ej_last_change_time', db.DateTime)
     ejudge_url = db.Column(db.String(50))
 
+    # TODO: А где хранится комментарий учителя?
+
     source_hash = db.Column(db.String(UNIQUE_IDENTITY_SIZE))  # We are using md5 hex digest
 
     def update_source(self, blob: bytes):
