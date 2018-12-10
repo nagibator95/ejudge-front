@@ -10,3 +10,4 @@ gevent
 marshmallow
 webargs
 pymysql
+sqlalchemy
