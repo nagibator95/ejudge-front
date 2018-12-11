@@ -51,8 +51,6 @@ class TestAPIProblemSubmission(TestCase):
 
         resp = self.send_request(run_id, **data)
 
-        print(resp.json)
-
         self.assert200(resp)
 
         self.assertIn('data', resp.json)
@@ -75,3 +73,15 @@ class TestAPIProblemSubmission(TestCase):
 
         self.assertEqual(run.ejudge_status, 444)
 
+    def test_bad_request(self):
+        run_id = self.run1.id
+
+        data = {
+            'run': {
+                'ejudge_status': 'this is not int',
+            }
+        }
+
+        resp = self.send_request(run_id, **data)
+
+        self.assert400(resp)

@@ -163,9 +163,11 @@ class ProblemRuns(MethodView):
             raise NotFound('Run with current id not found')
 
         schema = RunSchema(partial=True, context={'instance': run})
-        schema.load(args)
 
-        db.session.add(run)
+        run, errors = schema.load(args)
+        if errors:
+            raise BadRequest(errors)
+
         db.session.commit()
 
         schema = RunSchema()
@@ -173,7 +175,6 @@ class ProblemRuns(MethodView):
         data = schema.dump(run)
 
         return jsonify(data.data)
-
 
     @staticmethod
     def _check_file_restriction(file, max_size_kb: int = 64) -> bytes:
