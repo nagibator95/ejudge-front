@@ -54,6 +54,6 @@ if __name__ == '__main__':
     except:
         tests = unittest.TestLoader().loadTestsFromName(path)
 
-    result = unittest.TextTestRunner(verbosity=2).run(tests).wasSuccessful()
+    result = unittest.TextTestRunner(verbosity=3).run(tests).wasSuccessful()
     sys.exit(not result)
 

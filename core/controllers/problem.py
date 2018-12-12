@@ -27,7 +27,7 @@ post_args = {
 }
 
 
-class ProblemRuns(MethodView):
+class ProblemRunApi(MethodView):
     def get(self, problem_identity: str, context_identity=None):
         """ View for getting problem submissions
 

@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 from flask import url_for
 
-from core.controllers.problem import ProblemRuns
+from core.controllers.problem import ProblemRunApi
 from core.tests.base import TestCase
 from core.models import db, Run
 
@@ -17,12 +17,12 @@ class TestCheckFileRestriction(TestCase):
     def test_file_too_large(self):
         files = io.BytesIO(bytes((ascii('f') * 64 * 1024).encode('ascii')))
         with self.assertRaises(ValueError):
-            ProblemRuns._check_file_restriction(files)
+            ProblemRunApi._check_file_restriction(files)
 
         files = io.BytesIO(bytes((ascii('f') * 1).encode('ascii')))
 
         with self.assertRaises(ValueError):
-            ProblemRuns._check_file_restriction(files)
+            ProblemRunApi._check_file_restriction(files)
 
 
 class TestProblemSubmitCreation(TestCase):
@@ -53,9 +53,7 @@ class TestProblemSubmitCreation(TestCase):
     @patch('core.controllers.problem.Run.update_source')
     @patch('core.controllers.problem.queue_submit')
     def test_simple(self, mock_submit, mock_update):
-        submit = MagicMock()
-        submit.serialize.return_value = {'hhh': 'mmm'}
-        mock_submit.return_value = submit
+        mock_submit.return_value = {'hhh': 'mmm'}
 
         file = BytesIO(b'skdjvndfkjnvfk')
         data = dict(
@@ -63,11 +61,9 @@ class TestProblemSubmitCreation(TestCase):
         )
         resp = self.send_request(self.problem_identities[0], context_identity=self.contexts[0], **data)
 
-        print(resp.data)
-
-        self.assert200(resp)
+        self.assertStatus(resp, 201)
         mock_update.assert_called_once()
-        submit.serialize.assert_called_once()
+        mock_submit.assert_called_once()
 
     @patch('core.controllers.problem.Run.update_source')
     @patch('core.controllers.problem.queue_submit')

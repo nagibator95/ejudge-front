@@ -11,3 +11,4 @@ marshmallow
 webargs
 pymysql
 sqlalchemy
+redis
