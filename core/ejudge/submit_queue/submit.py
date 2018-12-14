@@ -48,7 +48,7 @@ class Submit:
         ejudge_language_id = run.ejudge_language_id
         user_id = run.user_id
 
-        # `Run` now not inside the queue so we should change status
+        # `Run` now not inside the submit_queue so we should change status
         run.status = 98  # Compiling
         db.session.add(run)
         db.session.commit()

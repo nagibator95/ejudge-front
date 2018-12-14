@@ -1,6 +1,6 @@
 import pickle
 
-from core.plugins import redis
+from core.plugins import redis_client
 
 
 class RedisQueue:
@@ -9,13 +9,13 @@ class RedisQueue:
 
     def put(self, value, pipe=None):
         if pipe is None:
-            pipe = redis
+            pipe = redis_client
 
         pipe.rpush(self.key, pickle.dumps(value))
 
     def get(self, pipe=None):
         if pipe is None:
-            pipe = redis
+            pipe = redis_client
 
         value = pipe.lpop(self.key)
         if value:
@@ -24,7 +24,7 @@ class RedisQueue:
 
     def get_blocking(self, timeout=0, pipe=None):
         if pipe is None:
-            pipe = redis
+            pipe = redis_client
 
         value = pipe.blpop(self.key, timeout=timeout)
         if value:

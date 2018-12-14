@@ -132,7 +132,7 @@ class ProblemRunApi(MethodView):
             context_identity=context_identity,
             ejudge_contest_id=problem.ejudge_contest_id,
             ejudge_language_id=language_id,
-            ejudge_status=377,  # In queue
+            ejudge_status=377,  # In submit_queue
             source_hash=source_hash,
         )
 
@@ -142,7 +142,7 @@ class ProblemRunApi(MethodView):
 
         run.update_source(text)
 
-        current_app.logger.info(f'Add new submission #{run.id} to queue')
+        current_app.logger.info(f'Add new submission #{run.id} to submit_queue')
 
         ejudge_url = current_app.config['EJUDGE_NEW_CLIENT_URL']
         _ = queue_submit(run.id, uid, ejudge_url)

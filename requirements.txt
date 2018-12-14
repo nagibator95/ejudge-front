@@ -12,3 +12,4 @@ webargs
 pymysql
 sqlalchemy
 redis
+flask-testing

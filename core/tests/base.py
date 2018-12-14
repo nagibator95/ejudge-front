@@ -4,7 +4,7 @@ import sys
 
 from core import create_app
 from core.models import db, Problem
-from core.plugins import mongo, redis
+from core.plugins import mongo, redis_client
 
 
 class TestCase(flask_testing.TestCase):
@@ -28,7 +28,7 @@ class TestCase(flask_testing.TestCase):
         assert mongo.db.name == 'test'
         mongo.db.client.drop_database(mongo.db)
 
-        redis.flushdb()
+        redis_client.flushdb()
 
     def create_problems(self, problem_identities: list):
         self.problems = []

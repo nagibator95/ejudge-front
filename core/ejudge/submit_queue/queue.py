@@ -2,14 +2,14 @@ import logging
 import pickle
 
 from .submit import Submit
-from core.plugins import redis
-from core.utils.redis.queue import RedisQueue
+from core.plugins import redis_client
+from core.utils.redis.redis_queue import RedisQueue
 
 
 log = logging.getLogger('submit_queue')
 
 
-DEFAULT_SUBMIT_QUEUE = 'submit.queue'
+DEFAULT_SUBMIT_QUEUE = 'submit.submit_queue'
 
 
 def last_put_id_key(key):
@@ -35,7 +35,7 @@ class SubmitQueue(RedisQueue):
         super(SubmitQueue, self).__init__(key=key)
 
     def get_last_get_id(self):
-        return int(redis.get(last_get_id_key(self.key)) or '0')
+        return int(redis_client.get(last_get_id_key(self.key)) or '0')
 
     def submit(self, run_id, user_id, ejudge_url):
         def _submit(pipe):
@@ -52,7 +52,7 @@ class SubmitQueue(RedisQueue):
                 pickle.dumps(submit.encode())
             )
             return submit
-        submit = redis.transaction(
+        submit = redis_client.transaction(
             _submit,
             self.key,
             last_get_id_key(self.key),
@@ -68,7 +68,7 @@ class SubmitQueue(RedisQueue):
             pipe.set(last_get_id_key(self.key), submit.id)
             return submit
 
-        submit = redis.transaction(
+        submit = redis_client.transaction(
             _get,
             self.key,
             last_get_id_key(self.key),
@@ -76,17 +76,17 @@ class SubmitQueue(RedisQueue):
             value_from_callable=True,
         )
 
-        redis.hdel(user_submits_key(self.key, submit.user_id), submit.id)
+        redis_client.hdel(user_submits_key(self.key, submit.user_id), submit.id)
         return submit
 
     def peek_all_submits(self):
         return [
             Submit.decode(pickle.loads(encoded))
-            for encoded in redis.lrange(self.key, 0, -1)
+            for encoded in redis_client.lrange(self.key, 0, -1)
         ]
 
     def peek_user_submits(self, user_id):
         return [
             Submit.decode(pickle.loads(encoded))
-            for encoded in redis.hgetall(user_submits_key(self.key, user_id)).values()
+            for encoded in redis_client.hgetall(user_submits_key(self.key, user_id)).values()
         ]

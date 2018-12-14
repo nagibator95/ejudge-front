@@ -21,7 +21,7 @@ class TestGetSubmissionSource(TestCase):
         db.session.flush()
 
         self.run = Run(user_identity=self.uuids[0], problem_id=self.problems[0].id,
-                        ejudge_status=1, ejudge_language_id=1)
+                       ejudge_status=1, ejudge_language_id=1)
 
         blob = b'skdjvndfkjnvfk'
 
@@ -34,7 +34,7 @@ class TestGetSubmissionSource(TestCase):
         self.run.update_source(blob)
 
     def send_request(self, run_id):
-        url = url_for('problem.problem_runs_update',
+        url = url_for('problem.problem_run_source',
                       problem_identity='I_dont_care',
                       run_id=run_id)
         response = self.client.get(url)

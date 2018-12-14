@@ -4,7 +4,7 @@ from flask import Flask
 
 from core.controllers.route import problem_blueprint
 from core.models.base import db
-from core.plugins import mongo, redis
+from core.plugins import mongo, redis_client
 from core.utils.exceptions import register_error_handlers
 from core.utils.auth import get_api_key_checker
 
@@ -34,7 +34,7 @@ def create_app():
 
     db.init_app(app)
     mongo.init_app(app)
-    redis.init_app(app)
+    redis_client.init_app(app)
 
     app.register_blueprint(problem_blueprint)
 
