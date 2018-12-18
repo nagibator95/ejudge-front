@@ -10,10 +10,11 @@ from core.utils.run import read_file_unknown_encoding
 class Problem(db.Model):
     __tablename__ = 'problem'
     id = db.Column(db.Integer, primary_key=True)
-    problem_identity = db.Column(db.String(UNIQUE_IDENTITY_SIZE), nullable=False)
+    problem_identity = db.Column(db.String(UNIQUE_IDENTITY_SIZE),
+                                 nullable=False, index=True, unique=True)
 
-    ejudge_contest_id = db.Column(db.Integer, nullable=False, autoincrement=False)
-    ejudge_problem_id = db.Column(db.Integer, nullable=False, autoincrement=False)  # id in contest
+    ejudge_contest_id = db.Column(db.Integer, nullable=False)
+    ejudge_problem_id = db.Column(db.Integer, nullable=False)  # id in contest
 
     def get_test(self, test_num, size=255):
         conf = EjudgeContestCfg(number=self.ejudge_contest_id)

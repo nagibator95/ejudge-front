@@ -12,11 +12,11 @@ class Run(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    user_identity = db.Column(db.String(UNIQUE_IDENTITY_SIZE), nullable=False)
+    user_identity = db.Column(db.String(UNIQUE_IDENTITY_SIZE), nullable=False, index=True)
     context_identity = db.Column(db.String(UNIQUE_IDENTITY_SIZE))
     ejudge_identity = db.Column(db.String(UNIQUE_IDENTITY_SIZE))
 
-    problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'))
+    problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'), index=True)
     problem = db.relationship('Problem', backref=db.backref('runs'))
 
     create_time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
@@ -34,8 +34,6 @@ class Run(db.Model):
     ejudge_create_time = db.Column('ej_create_time', db.DateTime)
     ejudge_last_change_time = db.Column('ej_last_change_time', db.DateTime)
     ejudge_url = db.Column(db.String(50))
-
-    # TODO: А где хранится комментарий учителя?
 
     source_hash = db.Column(db.String(UNIQUE_IDENTITY_SIZE))  # We are using md5 hex digest
 
