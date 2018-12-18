@@ -13,7 +13,9 @@ class RunSchema(Schema):
     ejudge_identity = fields.String(dump_only=True)
     ejudge_status = fields.Integer()
 
+    language_id = fields.String(dump_only=True)
     create_time = fields.DateTime(dump_only=True)
+    ejudge_last_change_time = fields.DateTime(dump_only=True)
 
     @post_load
     def load_course(self, data):

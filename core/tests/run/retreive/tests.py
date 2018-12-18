@@ -100,6 +100,9 @@ class TestAPIProblemSubmission(TestCase):
         self.assertIn('create_time', run0)
         self.assertIsNotNone(run0['create_time'])
 
+        self.assertIn('language_id', run0)
+        self.assertIn('ejudge_last_change_time', run0)
+
     def test_filter_by_user(self):
         resp = self.send_request(self.problem_identities[0], uid=self.uuids[0])
 
