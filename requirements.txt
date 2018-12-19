@@ -15,4 +15,4 @@ redis
 flask-testing
 alembic
 click
-teamcity
+teamcity-messages
