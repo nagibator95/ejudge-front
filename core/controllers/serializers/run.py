@@ -18,7 +18,7 @@ class RunSchema(Schema):
     ejudge_last_change_time = fields.DateTime(dump_only=True)
 
     @post_load
-    def load_course(self, data):
+    def load_run(self, data):
         """Get an ORM object to be loaded."""
         run = self.context.get('instance', Run())
 

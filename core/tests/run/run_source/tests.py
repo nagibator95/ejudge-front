@@ -35,7 +35,7 @@ class TestGetSubmissionSource(TestCase):
 
     def send_request(self, run_id):
         url = url_for('problem.problem_run_source',
-                      problem_identity='I_dont_care',
+                      problem_identity='I_don_t_care',
                       run_id=run_id)
         response = self.client.get(url)
         return response
