@@ -30,3 +30,8 @@ def test(teamcity, verbosity):
         exit_code = 0
 
     sys.exit(exit_code)
+
+
+if __name__ == '__main__':
+    test()
+

@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 from flask import url_for
 
-from core.controllers.problem import ProblemRunApi
+from core.controllers.run import ProblemRunApi
 from core.tests.base import TestCase
 from core.models import db, Run
 
@@ -50,8 +50,8 @@ class TestProblemSubmitCreation(TestCase):
         response = self.client.post(url, data=data, content_type='multipart/form-data')
         return response
 
-    @patch('core.controllers.problem.Run.update_source')
-    @patch('core.controllers.problem.queue_submit')
+    @patch('core.controllers.run.Run.update_source')
+    @patch('core.controllers.run.queue_submit')
     def test_simple(self, mock_submit, mock_update):
         mock_submit.return_value = {'hhh': 'mmm'}
 
@@ -65,8 +65,8 @@ class TestProblemSubmitCreation(TestCase):
         mock_update.assert_called_once()
         mock_submit.assert_called_once()
 
-    @patch('core.controllers.problem.Run.update_source')
-    @patch('core.controllers.problem.queue_submit')
+    @patch('core.controllers.run.Run.update_source')
+    @patch('core.controllers.run.queue_submit')
     def test_duplicate(self, mock_submit, mock_update):
         submit = MagicMock()
         submit.serialize.return_value = {'hhh': 'mmm'}
