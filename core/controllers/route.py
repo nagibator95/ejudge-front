@@ -1,6 +1,7 @@
 from flask import Blueprint
 
-from core.controllers.problem import ProblemRunApi
+from core.controllers.problem import ProblemApi
+from core.controllers.run import ProblemRunApi
 from core.controllers.run_source import RunSourceApi
 
 problem_blueprint = Blueprint('problem', __name__, url_prefix='/problem')
