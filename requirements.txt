@@ -16,3 +16,4 @@ flask-testing
 alembic
 click
 teamcity-messages
+flask_migrate
