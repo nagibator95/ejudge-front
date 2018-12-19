@@ -14,3 +14,5 @@ sqlalchemy
 redis
 flask-testing
 alembic
+werkzeug
+marshmallow_enum
